@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model audit_logs {
+  id          Int       @id
+  user_id     Int
+  action      String?   @db.VarChar
+  table_name  String?   @db.VarChar
+  record_id   Int?
+  description String?
+  date_time   DateTime? @db.Timestamp(6)
+  users       users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model categories {
+  id       Int        @id
+  name     String?    @db.VarChar
+  products products[]
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model customer_prices {
+  id           Int       @id
+  customer_id  Int
+  product_id   Int?
+  custom_price Float?
+  customers    customers @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  products     products  @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customer_prices_customer_id_fkey1")
+}
+
+model customers {
+  id              Int               @id
+  name            String?           @db.VarChar
+  email           String?           @db.VarChar
+  contact_number  String?           @db.VarChar
+  customer_prices customer_prices[]
+  sales           sales[]
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model expenses {
+  id               Int       @id
+  expense_category String?   @db.VarChar
+  description      String?
+  amount           Float?
+  expense_date     DateTime? @db.Timestamp(6)
+  payment_method   Int
+  recorded_by      Int
+  created_at       DateTime? @db.Timestamp(6)
+  updated_at       DateTime? @db.Timestamp(6)
+  payment          payment   @relation(fields: [payment_method], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users            users     @relation(fields: [recorded_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model inventory {
+  id               Int       @id
+  product_id       Int       @unique
+  sku              String?   @db.VarChar
+  available_weight Float?
+  unit             String?   @db.VarChar
+  updated          DateTime? @db.Timestamp(6)
+  products         products?
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model inventory_transactions {
+  id                       Int                      @id
+  transaction_type_id      Int
+  reference_table          String?                  @db.VarChar
+  reference_id             Int?
+  quantity_in              Float?
+  quantity_out             Float?
+  balance_after            Float?
+  created_at               DateTime?                @db.Timestamp(6)
+  updated_at               DateTime?                @db.Timestamp(6)
+  remarks                  String?
+  inventroy_transact_types inventroy_transact_types @relation(fields: [transaction_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model inventroy_transact_types {
+  id                     Int                      @id
+  transaction_types      String?                  @db.VarChar
+  inventory_transactions inventory_transactions[]
+}
+
+model payment {
+  id       Int        @id
+  payment  String?    @db.VarChar
+  expenses expenses[]
+  sales    sales[]
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model products {
+  id              Int               @id
+  name            String?           @db.VarChar
+  category_id     Int
+  type_of_meat    Int
+  url             String?           @db.VarChar
+  price_per_kg    Float?
+  customer_prices customer_prices[]
+  categories      categories        @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  inventory       inventory         @relation(fields: [id], references: [product_id], onDelete: NoAction, onUpdate: NoAction)
+  types_of_meats  types_of_meats    @relation(fields: [type_of_meat], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  purchases       purchases[]
+  sales_items     sales_items[]
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model purchases {
+  id            Int       @id
+  product_id    Int
+  weight_bought Float?
+  date_time     DateTime? @db.Timestamp(6)
+  products      products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model sales {
+  id           Int           @id
+  customer_id  Int?
+  status_id    Int
+  payment_id   Int
+  total_no_vat Float?
+  vat          Float?
+  total_amount Float?
+  date_time    DateTime?     @db.Timestamp(6)
+  customers    customers?    @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  payment      payment       @relation(fields: [payment_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  status       status        @relation(fields: [status_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sales_items  sales_items[]
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model sales_items {
+  id           Int      @id
+  sales_id     Int
+  product_id   Int
+  price_per_kg Float?
+  weight_sold  Float?
+  amount       Float?
+  products     products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sales        sales    @relation(fields: [sales_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model status {
+  id          Int     @id
+  status_name String? @db.VarChar
+  sales       sales[]
+}
+
+model types_of_meats {
+  id       Int        @id
+  type     String?    @db.VarChar
+  products products[]
+}
+
+model user_roles {
+  id    Int     @id
+  role  String? @db.VarChar
+  users users[]
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model users {
+  id             Int          @id
+  username       String?      @db.VarChar
+  hashedpassword String?      @db.VarChar
+  name           String?      @db.VarChar
+  email          String?      @db.VarChar
+  role_id        Int
+  audit_logs     audit_logs[]
+  expenses       expenses[]
+  user_roles     user_roles   @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
