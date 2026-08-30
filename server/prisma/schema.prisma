@@ -1,6 +1,5 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -32,7 +31,7 @@ model customer_prices {
   product_id   Int?
   custom_price Float?
   customers    customers @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  products     products  @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customer_prices_customer_id_fkey1")
+  products     products? @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model customers {
