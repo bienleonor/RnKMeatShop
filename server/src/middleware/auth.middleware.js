@@ -28,8 +28,12 @@ export function requireAuth(req, res, next) {
 }
 
 export function requireRole(...roles) {
+  const allowedRoles = roles.map((role) => role.toLowerCase());
+
   return (req, res, next) => {
-    if (!roles.includes(req.user?.role)) {
+    const currentRole = req.user?.role?.toLowerCase();
+
+    if (!currentRole || !allowedRoles.includes(currentRole)) {
       return res.status(403).json({ error: "Insufficient permissions" });
     }
 

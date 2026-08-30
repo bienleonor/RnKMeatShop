@@ -101,13 +101,13 @@ model products {
   id              Int               @id
   name            String?           @db.VarChar
   category_id     Int
-  type_of_meat    Int
+  type_of_product Int
   url             String?           @db.VarChar
   price_per_kg    Float?
   customer_prices customer_prices[]
   categories      categories        @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   inventory       inventory         @relation(fields: [id], references: [product_id], onDelete: NoAction, onUpdate: NoAction)
-  types_of_meats  types_of_meats    @relation(fields: [type_of_meat], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  types_of_products types_of_products @relation(fields: [type_of_product], references: [id], onDelete: NoAction, onUpdate: NoAction)
   purchases       purchases[]
   sales_items     sales_items[]
 }
@@ -155,7 +155,7 @@ model status {
   sales       sales[]
 }
 
-model types_of_meats {
+model types_of_products {
   id       Int        @id
   type     String?    @db.VarChar
   products products[]
@@ -170,7 +170,7 @@ model user_roles {
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model users {
   id             Int          @id
-  username       String?      @db.VarChar
+  username       String?      @unique @db.VarChar
   hashedpassword String?      @db.VarChar
   name           String?      @db.VarChar
   email          String?      @db.VarChar
