@@ -170,7 +170,7 @@ model user_roles {
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model users {
   id             Int          @id
-  username       String?      @db.VarChar
+  username       String?      @unique @db.VarChar
   hashedpassword String?      @db.VarChar
   name           String?      @db.VarChar
   email          String?      @db.VarChar
