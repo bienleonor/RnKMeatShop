@@ -36,7 +36,7 @@ function LoginForm() {
 
     try {
       await login(username.trim(), password);
-      router.replace("/");
+      router.replace("/dashboard");
     } catch (requestError: unknown) {
       setError(
         requestError instanceof ApiError && requestError.status === 401

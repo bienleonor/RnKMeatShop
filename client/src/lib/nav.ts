@@ -5,6 +5,7 @@ import {
   ShoppingCart,
   Receipt,
   ScrollText,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 
@@ -15,10 +16,12 @@ export type NavItem = {
 };
 
 export const navItems: NavItem[] = [
-  { label: "Dashboard", href: "/", icon: LayoutGrid },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutGrid },
+  { label: "POS", href: "/pos", icon: ShoppingCart },
+  { label: "Sales", href: "/sales", icon: ShoppingCart },
   { label: "Products & Prices", href: "/products", icon: Beef },
   { label: "Inventory & Stock", href: "/inventory", icon: Warehouse },
-  { label: "Sales & POS", href: "/sales", icon: ShoppingCart },
   { label: "Expenses", href: "/expenses", icon: Receipt },
   { label: "Audit Logs", href: "/auditlogs", icon: ScrollText },
+  { label: "Customers", href: "/customers", icon: Users },
 ];
